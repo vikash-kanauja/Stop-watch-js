@@ -1,19 +1,20 @@
-const startButton = document.querySelector(".start");
-const stopButton = document.querySelector(".stop");
-const lapButton = document.querySelector(".lap");
-const resetButton = document.querySelector(".reset");
-const hour = document.querySelector(".hour");
-const minute = document.querySelector(".minute");
-const second = document.querySelector(".second");
-const milisecond = document.querySelector(".milisecond");
-const lapItemList = document.querySelector(".lap__items");
+const startButton = document.getElementById("start");
+const stopButton = document.getElementById("stop");
+const lapButton = document.getElementById("lap");
+const resetButton = document.getElementById("reset");
+const hour = document.getElementById("hour");
+const minute = document.getElementById("minute");
+const second = document.getElementById("second");
+const milisecond = document.getElementById("milisecond");
+const lapItemList = document.getElementById("lap__items");
 
-const lap = document.querySelector(".laps_comtainer");
+const lap = document.getElementById("laps_comtainer");
 
 let startTime = 0;
 let excapedTime = 0;
 let timerInterval;
 let lapsTimes = [];
+let isTimerRunning = false;
 
 // Event listener for start button
 startButton.addEventListener("click", () => {
@@ -34,6 +35,7 @@ startButton.addEventListener("click", () => {
     minute.innerText = timeData.timeInMinute;
     hour.innerText = timeData.timeInHour;
   }, 10);
+  isTimerRunning=true;
 });
 
 // Event listener for stop button
@@ -44,7 +46,10 @@ stopButton.addEventListener("click", () => {
   stopButton.classList.add("hidden");
 
   // Stop the timer
+  console.log(timerInterval);
   clearInterval(timerInterval);
+  console.log(timerInterval);
+  isTimerRunning =false;
 });
 
 resetButton.addEventListener("click", () => {
@@ -54,7 +59,7 @@ resetButton.addEventListener("click", () => {
   excapedTime = 0;
 
     // Reset displayed time
-  milisecond.innerText = "000";
+  milisecond.innerText = "00";
   second.innerText = "00";
   minute.innerText = "00";
   hour.innerText = "00";
@@ -71,14 +76,15 @@ resetButton.addEventListener("click", () => {
   }
   lapItemList.classList.add("hidden");
   lap.classList.add("hidden");
+  isTimerRunning = false;
 });
 
 // Function to format time
 
 const formatTime = (timedifference) => {
-  let timeInMillisecond = Math.floor(timedifference % 1000)
+  let timeInMillisecond = Math.floor((timedifference % 1000)/10)
     .toString()
-    .padStart(3, "0");   // The padStart() method pads a string with another string (multiple times) until it reaches a given length.
+    .padStart(2, "0");   // The padStart() method pads a string with another string (multiple times) until it reaches a given length.
   let timeInSecond = Math.floor((timedifference / 1000) % 60)
     .toString()
     .padStart(2, "0");
@@ -88,12 +94,15 @@ const formatTime = (timedifference) => {
   let timeInHour = Math.floor((timedifference / (1000 * 60 * 60)) % 24)
     .toString()
     .padStart(2, "0");
-
   return { timeInMillisecond, timeInSecond, timeInMinute, timeInHour };
+  
 };
 
 // Event listener for lap button
 lapButton.addEventListener("click", () => {
+
+
+if(isTimerRunning){
   lap.classList.remove("hidden");
   lapItemList.classList.remove("hidden");
 
@@ -130,5 +139,6 @@ lapButton.addEventListener("click", () => {
   `;
 
   // Append the list item to the ul element
-  lapItemList.appendChild(listItem);
+  if(timerInterval){  lapItemList.appendChild(listItem);}
+}
 });
