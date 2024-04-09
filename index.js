@@ -11,7 +11,7 @@ const lapItemList = document.getElementById("lap__items");
 const lap = document.getElementById("laps_comtainer");
 
 let startTime = 0;
-let excapedTime = 0;
+let escapeTime = 0;
 let timerInterval;
 let lapsTimes = [];
 let isTimerRunning = false;
@@ -24,10 +24,10 @@ startButton.addEventListener("click", () => {
   resetButton.classList.remove("hidden");
 
 // Start the timer
-  startTime = Date.now() - excapedTime;
+  startTime = Date.now() - escapeTime;
   timerInterval = setInterval(() => {
-    excapedTime = Date.now() - startTime;
-    let timeData = formatTime(excapedTime);
+    escapeTime = Date.now() - startTime;
+    let timeData = formatTime(escapeTime);
 
     // Update the displayed time
     milisecond.innerText = timeData.timeInMillisecond;
@@ -46,9 +46,7 @@ stopButton.addEventListener("click", () => {
   stopButton.classList.add("hidden");
 
   // Stop the timer
-  console.log(timerInterval);
   clearInterval(timerInterval);
-  console.log(timerInterval);
   isTimerRunning =false;
 });
 
@@ -56,7 +54,7 @@ resetButton.addEventListener("click", () => {
   // Reset all timing variables
   clearInterval(timerInterval);
   startTime = 0;
-  excapedTime = 0;
+  escapeTime = 0;
 
     // Reset displayed time
   milisecond.innerText = "00";
@@ -82,16 +80,18 @@ resetButton.addEventListener("click", () => {
 // Function to format time
 
 const formatTime = (timedifference) => {
-  let timeInMillisecond = Math.floor((timedifference % 1000)/10)
+  let millisecond = Math.abs(timedifference);
+  let date = new Date(millisecond);
+  let timeInMillisecond = Math.floor(date.getUTCMilliseconds()/10)
     .toString()
     .padStart(2, "0");   // The padStart() method pads a string with another string (multiple times) until it reaches a given length.
-  let timeInSecond = Math.floor((timedifference / 1000) % 60)
+  let timeInSecond = date.getUTCSeconds()
     .toString()
     .padStart(2, "0");
-  let timeInMinute = Math.floor((timedifference / (1000 * 60)) % 60)
+  let timeInMinute = date.getUTCMinutes()
     .toString()
     .padStart(2, "0");
-  let timeInHour = Math.floor((timedifference / (1000 * 60 * 60)) % 24)
+  let timeInHour = date.getUTCHours()
     .toString()
     .padStart(2, "0");
   return { timeInMillisecond, timeInSecond, timeInMinute, timeInHour };
